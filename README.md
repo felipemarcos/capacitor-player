@@ -18,6 +18,13 @@ await Player.play({
 });
 ```
 
+## Support
+| Platform | Supported? |
+| --- | --- |
+| Android | ✅ |
+| iOS | ✅ |
+| Web | ❌ |
+
 ## API
 
 <docgen-index>
