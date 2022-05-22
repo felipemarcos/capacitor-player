@@ -1,5 +1,7 @@
 import Foundation
 import Capacitor
+import AVKit
+import AVFoundation
 
 /**
  * Please read the Capacitor iOS Plugin Development Guide
@@ -8,11 +10,26 @@ import Capacitor
 @objc(PlayerPlugin)
 public class PlayerPlugin: CAPPlugin {
     private let implementation = Player()
-
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
+    
+    @objc func play(_ call: CAPPluginCall) {
+        guard let url = call.getString("url") else {
+            call.reject("Video URL cannot be empty");
+            return
+        }
+        
+        guard let bridge = self.bridge else { return }
+        
+        let videoURL = URL(string: url)
+        
+        let player = AVPlayer(url: videoURL!)
+        let playerViewController = AVPlayerViewController()
+        playerViewController.player = player
+        
+        DispatchQueue.main.async {
+            bridge.viewController?.present(playerViewController, animated: true) {
+                playerViewController.player!.play()
+                call.resolve()
+            }
+        }
     }
 }
